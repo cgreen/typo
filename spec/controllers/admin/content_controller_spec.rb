@@ -48,7 +48,7 @@ describe Admin::ContentController do
       response.should render_template('index')
       response.should be_success
     end
-    
+
     it 'should restrict to withdrawn articles' do
       article = Factory(:article, :state => 'withdrawn', :published_at => '2010-01-01')
       get :index, :search => {:state => 'withdrawn'}
@@ -56,7 +56,7 @@ describe Admin::ContentController do
       response.should render_template('index')
       response.should be_success
     end
-  
+
     it 'should restrict to withdrawn articles' do
       article = Factory(:article, :state => 'withdrawn', :published_at => '2010-01-01')
       get :index, :search => {:state => 'withdrawn'}
@@ -669,6 +669,26 @@ describe Admin::ContentController do
         end.should_not change(Article, :count)
       end
 
+    end
+  end
+
+  describe 'merge action' do
+    it 'should combine content' do
+      articleA = Factory(:article, :id => 1001, :body => 'body A', :extended => 'extended A')
+      articleB = Factory(:article, :id => 1002, :body => 'body B', :extended => 'extended B')
+      post :merge, :id => articleA.id, :merge_with => articleB.id
+      expect(@article.body).to match(/bodyA\nbody B/)
+      expect(@article.extended).to match(/extended A\nextended B/)
+    end
+    it 'should the same author as one of the source articles' do
+    end
+    it 'should the same title as one of the source articles' do
+    end
+    it 'should be a new article' do
+    end
+    it 'should combine commments' do
+    end
+    it 'should make the comments in the source articles point to the merged article' do
     end
   end
 end
