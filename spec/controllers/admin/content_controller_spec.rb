@@ -673,12 +673,17 @@ describe Admin::ContentController do
   end
 
   describe 'merge action' do
+    let(:articleA) { Factory :article, body: 'Body A', extended: 'Extended A' }
+    let(:articleB) { Factory :article, body: 'Body B', extended: 'Extended B' }
+
+    it 'should call the Article merge method' do
+      expect(articleA).to receive(:merge)
+      post :merge, id: articleA.id, merge_with: articleB.id
+    end
     it 'should combine content' do
-      articleA = Factory(:article, :id => 1001, :body => 'body A', :extended => 'extended A')
-      articleB = Factory(:article, :id => 1002, :body => 'body B', :extended => 'extended B')
-      post :merge, :id => articleA.id, :merge_with => articleB.id
-      expect(session[:article].body).to match(/bodyA\nbody B/)
-      expect(session[:article].extended).to match(/extended A\nextended B/)
+      post :merge, id: articleA.id, merge_with: articleB.id
+      expect(session[:article].body).to match(/BodyABody B/)
+      expect(session[:article].extended).to match(/Extended AExtended B/)
     end
     it 'should the same author as one of the source articles' do
     end
