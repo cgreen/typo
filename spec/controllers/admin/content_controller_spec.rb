@@ -491,6 +491,11 @@ describe Admin::ContentController do
         expect(Article).to receive(:merge)
         post :merge, id: articleA.id, merge_with: articleB.id
       end
+
+      it 'should redirect to the index view' do
+        post :merge, id: articleA.id, merge_with: articleB.id
+        expect(response).to redirect_to(action: 'index')
+      end
     end
 
     describe 'edit action' do
