@@ -115,13 +115,12 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def merge
-    #debugger
     @right = Article.find(params[:merge_with])
     if @right == nil
       flash[:notice] = "Article #{params[:merge_with]} does not exist."
+      return
     end
-    @left = Article.find(params[:id])
-    session[:article] = @left.merge(params[:merge_with])
+    session[:article] = Article.merge(params[:id], params[:merge_with])
     redirect_to :action => 'index'
   end
 

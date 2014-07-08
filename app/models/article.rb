@@ -416,12 +416,14 @@ class Article < Content
     user.admin? || user_id == user.id
   end
 
-  def merge(id)
-    other = Article.find(id)
-    raise "Cannot merge with a non-existent article. ID = #{id}" unless other
+  def self.merge(id1, id2)
+    article1 = Article.find(id1)
+    raise "No article exists with ID = #{id1}" unless article1 
+    article2 = Article.find(id2)
+    raise "No article exists with ID = #{id2}" unless article2 
     merged = Article.new
-    merged.body = @body + other.body
-    merged.extended = @extended + other.extended
+    merged.body = article1.body + article2.body
+    merged.extended = article1.extended + article2.extended
     return merged
   end
 
