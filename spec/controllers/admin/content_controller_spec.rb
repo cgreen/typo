@@ -481,6 +481,18 @@ describe Admin::ContentController do
     it_should_behave_like 'destroy action'
     it_should_behave_like 'autosave action'
 
+
+    describe 'merge action' do
+
+      let(:articleA) { FactoryGirl.create :article, body: 'Body A', extended: 'Extended A' }
+      let(:articleB) { FactoryGirl.create :article, body: 'Body B', extended: 'Extended B' }
+
+      it 'should call the Article merge method' do
+        expect(Article).to receive(:merge)
+        post :merge, id: articleA.id, merge_with: articleB.id
+      end
+    end
+
     describe 'edit action' do
 
       it 'should edit article' do
@@ -669,31 +681,6 @@ describe Admin::ContentController do
         end.should_not change(Article, :count)
       end
 
-    end
-  end
-
-  describe 'merge action' do
-    let(:articleA) { Factory :article, body: 'Body A', extended: 'Extended A' }
-    let(:articleB) { Factory :article, body: 'Body B', extended: 'Extended B' }
-
-    it 'should call the Article merge method' do
-      expect(articleA).to receive(:merge)
-      post :merge, id: articleA.id, merge_with: articleB.id
-    end
-    it 'should combine content' do
-      post :merge, id: articleA.id, merge_with: articleB.id
-      expect(session[:article].body).to match(/BodyABody B/)
-      expect(session[:article].extended).to match(/Extended AExtended B/)
-    end
-    it 'should the same author as one of the source articles' do
-    end
-    it 'should the same title as one of the source articles' do
-    end
-    it 'should be a new article' do
-    end
-    it 'should combine commments' do
-    end
-    it 'should make the comments in the source articles point to the merged article' do
     end
   end
 end

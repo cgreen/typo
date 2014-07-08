@@ -630,5 +630,20 @@ describe Article do
     end
 
   end
+
+  describe '.merge' do
+    it 'should combine content' do
+    end
+    it 'should have the same author as one of the source articles' do
+    end
+    it 'should have the same title as one of the source articles' do
+    end
+    it 'should be a new article' do
+    end
+    it 'should combine commments' do
+    end
+    it 'should make the comments in the source articles point to the merged article' do
+    end
+  end
 end
 
