@@ -422,8 +422,10 @@ class Article < Content
     article2 = Article.find(id2)
     raise "No article exists with ID = #{id2}" unless article2 
     merged = Article.new
+    merged.author = article1.author
     merged.body = article1.body + article2.body
     merged.extended = article1.extended + article2.extended
+    merged.title = article1.title
     return merged
   end
 

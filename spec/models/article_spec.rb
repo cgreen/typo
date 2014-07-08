@@ -632,17 +632,35 @@ describe Article do
   end
 
   describe '.merge' do
-    it 'should combine content' do
+    let(:articleA) { FactoryGirl.create :article, body: 'Body A', extended: 'Extended A', author: 'Author A', title: 'Title A' }
+    let(:articleB) { FactoryGirl.create :article, body: 'Body B', extended: 'Extended B' , author: 'Author B', title: 'Title B' }
+
+    subject { Article.merge(articleA.id, articleB.id) }
+
+    it 'should combine body' do
+      expect(subject.body).to eq(articleA.body + articleB.body)
     end
+
+    it 'should combine extended' do
+      expect(subject.extended).to eq(articleA.extended + articleB.extended)
+    end
+
     it 'should have the same author as one of the source articles' do
+      expect(subject.author).to eq(articleA.author)
     end
+
     it 'should have the same title as one of the source articles' do
+      expect(subject.title).to eq(articleA.title)
     end
+
     it 'should be a new article' do
+      expect(subject.id).to satisfy { |v| v != articleA.id and v != articleB.id }
     end
-    it 'should combine commments' do
+
+    it 'should combine commments', pending: 'true' do
     end
-    it 'should make the comments in the source articles point to the merged article' do
+
+    it 'should make the comments in the source articles point to the merged article', pending: 'true' do
     end
   end
 end
