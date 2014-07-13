@@ -31,5 +31,5 @@ Feature: Write Articles
     And I am on the edit page for "Title 20"
     And I fill in "merge_with" with "21"
     And I press "Merge"
-    Then the article "Title 20" should have body "Body 20\nBody21"
+    Then the article "Title 20" should have body "Body 20Body21"
 
