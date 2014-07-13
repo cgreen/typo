@@ -487,14 +487,14 @@ describe Admin::ContentController do
       let(:articleA) { FactoryGirl.create :article, body: 'Body A', extended: 'Extended A' }
       let(:articleB) { FactoryGirl.create :article, body: 'Body B', extended: 'Extended B' }
 
-      it 'should call the Article merge method' do
-        expect(Article).to receive(:merge)
+      it 'should call the merge method' do
+        expect(articleA).to receive(:merge!)
         post :merge, id: articleA.id, merge_with: articleB.id
       end
 
-      it 'should redirect to the index view' do
+      it 'should redirect to the edit view' do
         post :merge, id: articleA.id, merge_with: articleB.id
-        expect(response).to redirect_to(action: 'index')
+        expect(response).to redirect_to(action: 'edit')
       end
     end
 

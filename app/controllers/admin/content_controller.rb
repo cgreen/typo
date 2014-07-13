@@ -116,12 +116,16 @@ class Admin::ContentController < Admin::BaseController
 
   def merge
     begin
+      article = Article.find(params[:id])
       merge_with = Article.find(params[:merge_with])
-      session[:article] = Article.merge(params[:id], params[:merge_with])
+      article.merge!(params[:merge_with])
     rescue ActiveRecord::RecordNotFound
+#The ID in the notice may not be correct as Article.find(params[:id]) could also raise an exception.
       flash[:notice] = "Article #{params[:merge_with]} does not exist."
+      redirect_to action: 'index'
+      return
     end
-    redirect_to :action => 'index'
+    redirect_to action: 'edit', id: article.id
   end
 
   protected
