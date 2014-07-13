@@ -631,36 +631,38 @@ describe Article do
 
   end
 
-  describe '.merge' do
-    let(:articleA) { FactoryGirl.create :article, body: 'Body A', extended: 'Extended A', author: 'Author A', title: 'Title A' }
-    let(:articleB) { FactoryGirl.create :article, body: 'Body B', extended: 'Extended B' , author: 'Author B', title: 'Title B' }
+  describe '#merge!' do
+    subject { FactoryGirl.create :article, body: 'Body A', extended: 'Extended A', author: 'Author A', title: 'Title A' }
+    let!(:articleB) { FactoryGirl.create :article, body: 'Body B', extended: 'Extended B' , author: 'Author B', title: 'Title B' }
+    let!(:commentA) { FactoryGirl.create :comment, article: subject, body: "A comment" }
+    let!(:commentB) { FactoryGirl.create :comment, article: articleB, body: "B comment" }
 
-    subject { Article.merge(articleA.id, articleB.id) }
+    before do
+      subject.merge!(articleB.id)
+    end
 
     it 'should combine body' do
-      expect(subject.body).to eq(articleA.body + articleB.body)
+      expect(subject.body).to match(/#{articleB.body}$/)
     end
 
     it 'should combine extended' do
-      expect(subject.extended).to eq(articleA.extended + articleB.extended)
+      expect(subject.extended).to eq("Extended AExtended B")
     end
 
     it 'should have the same author as one of the source articles' do
-      expect(subject.author).to eq(articleA.author)
+      expect(subject.author).to eq("Author A")
     end
 
     it 'should have the same title as one of the source articles' do
-      expect(subject.title).to eq(articleA.title)
+      expect(subject.title).to eq("Title A")
     end
 
-    it 'should be a new article' do
-      expect(subject.id).to satisfy { |v| v != articleA.id and v != articleB.id }
+    it 'should combine commments' do
+      expect(subject.comments.map {|c| c.body}).to eq(["A comment", "B comment"])
     end
 
-    it 'should combine commments', pending: 'true' do
-    end
-
-    it 'should make the comments in the source articles point to the merged article', pending: 'true' do
+    it 'should make the comments in the source articles point to the merged article' do
+      expect(Comment.find_by_body("B comment").article_id).to eq(subject.id)
     end
   end
 end

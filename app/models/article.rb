@@ -416,17 +416,15 @@ class Article < Content
     user.admin? || user_id == user.id
   end
 
-  def self.merge(id1, id2)
-    article1 = Article.find(id1)
-    raise "No article exists with ID = #{id1}" unless article1 
-    article2 = Article.find(id2)
-    raise "No article exists with ID = #{id2}" unless article2 
-    merged = Article.new
-    merged.author = article1.author
-    merged.body = article1.body + article2.body
-    merged.extended = article1.extended + article2.extended
-    merged.title = article1.title
-    return merged
+  def merge!(merge_id)
+    article = Article.find(merge_id)
+    raise "No article exists with ID = #{merge_id}" unless article 
+    self.body += article.body
+    self.extended += article.extended
+    self.save
+    Comment.where(article_id: merge_id).update_all(article_id: self.id)
+    article.reload
+    article.destroy
   end
 
   protected
