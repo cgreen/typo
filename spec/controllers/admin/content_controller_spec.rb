@@ -48,7 +48,7 @@ describe Admin::ContentController do
       response.should render_template('index')
       response.should be_success
     end
-    
+
     it 'should restrict to withdrawn articles' do
       article = Factory(:article, :state => 'withdrawn', :published_at => '2010-01-01')
       get :index, :search => {:state => 'withdrawn'}
@@ -56,7 +56,7 @@ describe Admin::ContentController do
       response.should render_template('index')
       response.should be_success
     end
-  
+
     it 'should restrict to withdrawn articles' do
       article = Factory(:article, :state => 'withdrawn', :published_at => '2010-01-01')
       get :index, :search => {:state => 'withdrawn'}
@@ -480,6 +480,23 @@ describe Admin::ContentController do
     it_should_behave_like 'new action'
     it_should_behave_like 'destroy action'
     it_should_behave_like 'autosave action'
+
+
+    describe 'merge action' do
+
+      let(:articleA) { FactoryGirl.create :article, body: 'Body A', extended: 'Extended A' }
+      let(:articleB) { FactoryGirl.create :article, body: 'Body B', extended: 'Extended B' }
+
+      it 'should call the merge method' do
+        expect(articleA).to receive(:merge!)
+        post :merge, id: articleA.id, merge_with: articleB.id
+      end
+
+      it 'should redirect to the edit view' do
+        post :merge, id: articleA.id, merge_with: articleB.id
+        expect(response).to redirect_to(action: 'edit')
+      end
+    end
 
     describe 'edit action' do
 
